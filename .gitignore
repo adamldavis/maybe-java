@@ -1,2 +1,4 @@
-.idea/workspace.xml
-out
+.bin/
+bin/
+target/
+
