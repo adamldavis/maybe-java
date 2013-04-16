@@ -31,17 +31,32 @@ import com.google.common.base.Supplier;
  */
 public abstract class Maybe<T> implements Iterable<T> {
 
+	/**
+	 * Whether the value is known or not.
+	 * 
+	 * @return True if value, false if no value.
+	 */
 	public abstract boolean isKnown();
 
+	/**
+	 * Returns the wrapped value if any, otherwise the given value.
+	 * 
+	 * @param defaultValue
+	 *            Value to return if this instance of Maybe is empty.
+	 * @return this Maybe's value if known, otherwise the given value.
+	 */
 	public abstract T otherwise(T defaultValue);
 
 	public abstract Maybe<T> otherwise(Maybe<T> maybeDefaultValue);
-	
+
 	public abstract <E extends Throwable> T otherwiseThrow(Class<E> ex)
-		throws E;
-	
-	public abstract <E extends Throwable> T otherwiseThrow(Supplier<E> exSupplier)
-		throws E;
+			throws E;
+
+	public abstract <E extends Throwable> T otherwiseThrow(Class<E> ex,
+			String message) throws E;
+
+	public abstract <E extends Throwable> T otherwiseThrow(
+			Supplier<E> exSupplier) throws E;
 
 	public abstract <U> Maybe<U> to(Function<? super T, ? extends U> mapping);
 
@@ -50,12 +65,41 @@ public abstract class Maybe<T> implements Iterable<T> {
 	public boolean isEmpty() {
 		return !isKnown();
 	}
-	
-	public static <T> Maybe<T> unknown() {
-		return new Unknown<T>();
+
+	/**
+	 * Synonymous with {@link Maybe#unknown()}.
+	 * 
+	 * @return an empty instance of Maybe.
+	 */
+	public static <T> Maybe<T> nothing() {
+		return new AbsentValue<T>();
 	}
 
-	private static class Unknown<T> extends Maybe<T> {
+	/**
+	 * Represents an unknown value (replaces null).
+	 * 
+	 * @return an empty instance of Maybe.
+	 */
+	public static <T> Maybe<T> unknown() {
+		return new AbsentValue<T>();
+	}
+
+	/**
+	 * If given value is null, equivalent to {@link Maybe#unknown()}; otherwise
+	 * equivalent to {@link #definitely(Object)}.
+	 * 
+	 * @param it
+	 *            Possibly null reference.
+	 * @return An instance of Maybe.
+	 */
+	public static <T> Maybe<T> maybe(T it) {
+		if (it == null)
+			return unknown();
+		else
+			return definitely(it);
+	}
+
+	private static class AbsentValue<T> extends Maybe<T> {
 		@Override
 		public boolean isKnown() {
 			return false;
@@ -102,6 +146,12 @@ public abstract class Maybe<T> implements Iterable<T> {
 		}
 
 		@Override
+		public <E extends Throwable> T otherwiseThrow(Supplier<E> exSupplier)
+				throws E {
+			throw exSupplier.get();
+		}
+
+		@Override
 		public <E extends Throwable> T otherwiseThrow(Class<E> ex) throws E {
 			try {
 				throw ex.newInstance();
@@ -113,9 +163,13 @@ public abstract class Maybe<T> implements Iterable<T> {
 		}
 
 		@Override
-		public <E extends Throwable> T otherwiseThrow(Supplier<E> exSupplier)
-				throws E {
-			throw exSupplier.get();
+		public <E extends Throwable> T otherwiseThrow(Class<E> ex,
+				String message) throws E {
+			try {
+				throw (E) ex.getConstructor(String.class).newInstance(message);
+			} catch (Exception unexpected) {
+				throw new RuntimeException(unexpected);
+			}
 		}
 
 	}
@@ -184,13 +238,19 @@ public abstract class Maybe<T> implements Iterable<T> {
 		}
 
 		@Override
+		public <E extends Throwable> T otherwiseThrow(Supplier<E> exSupplier)
+				throws E {
+			return theValue;
+		}
+
+		@Override
 		public <E extends Throwable> T otherwiseThrow(Class<E> ex) throws E {
 			return theValue;
 		}
 
 		@Override
-		public <E extends Throwable> T otherwiseThrow(Supplier<E> exSupplier)
-				throws E {
+		public <E extends Throwable> T otherwiseThrow(Class<E> ex,
+				String message) throws E {
 			return theValue;
 		}
 
