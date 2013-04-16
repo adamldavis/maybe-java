@@ -13,14 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package com.natpryce.maybe;
+package com.adamldavis.maybe;
+
+import java.util.Collections;
+import java.util.Iterator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-
-import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * The aim of the Maybe type is to avoid using 'null' references.

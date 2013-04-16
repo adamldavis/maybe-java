@@ -1,5 +1,6 @@
-package com.natpryce.maybe;
+package com.adamldavis.maybe;
 
+import com.adamldavis.maybe.Maybe;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import org.junit.Test;
@@ -7,12 +8,12 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Set;
 
+import static com.adamldavis.maybe.Maybe.definitely;
+import static com.adamldavis.maybe.Maybe.unknown;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.natpryce.maybe.Maybe.definitely;
-import static com.natpryce.maybe.Maybe.unknown;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
