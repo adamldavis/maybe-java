@@ -10,9 +10,8 @@
     <packaging>jar</packaging>
     <groupId>com.adamldavis</groupId>
     <artifactId>maybe</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <url>http://adamldavis.com/maybe</url>
-	
     <licenses>
         <license>
             <name>Apache 2.0</name>
@@ -37,6 +36,8 @@
     </developers>
 
     <build>
+	<sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>	
         <plugins>
 	 		<plugin>
 	 			<groupId>org.apache.maven.plugins</groupId>
